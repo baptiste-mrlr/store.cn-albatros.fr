@@ -224,14 +224,8 @@ input.invalid,select.invalid{border-color:var(--color-error);}
 .btn-next:hover{background:var(--color-gold-dim);}
 
 /* règlement sur place container */
-.paypal-section{margin-top:var(--space-6);}
-.paypal-label{font-size:var(--text-sm);font-weight:600;color:var(--color-text-muted);margin-bottom:var(--space-4);text-align:center;letter-spacing:.04em;}
-.paypal-notice{font-size:var(--text-xs);color:var(--color-text-faint);text-align:center;margin-top:var(--space-3);line-height:1.6;}
+
 #physical-payment-container-removed{min-height:48px;}
-.paypal-placeholder{border:2px dashed rgba(200,212,0,.25);border-radius:var(--radius-lg);padding:var(--space-6);text-align:center;background:var(--color-gold-subtle);}
-.paypal-placeholder p{font-size:var(--text-sm);color:var(--color-text-muted);line-height:1.6;}
-.paypal-placeholder .config-note{display:inline-block;margin-top:var(--space-3);font-size:var(--text-xs);background:rgba(200,212,0,.15);color:var(--color-gold);border:1px solid rgba(200,212,0,.3);border-radius:var(--radius-md);padding:var(--space-2) var(--space-3);}
-.paypal-placeholder code{font-family:monospace;font-size:.9em;background:rgba(255,255,255,.07);padding:2px 6px;border-radius:3px;}
 
 /* Succès paiement */
 .payment-success{text-align:center;padding:var(--space-8) 0;}
@@ -292,20 +286,65 @@ input.invalid,select.invalid{border-color:var(--color-error);}
 .cash-info-title { font-family:var(--font-display); font-size:var(--text-base); font-weight:800; text-transform:uppercase; color:var(--color-success); margin-bottom:var(--space-2); }
 .cash-info-text { font-size:var(--text-sm); color:var(--color-text-muted); line-height:1.7; }
 
+
+/* ── Section Contact ── */
+.contact-section{padding-block:var(--space-16) var(--space-20);}
+.contact-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:var(--space-12);align-items:start;}
+@media(max-width:768px){.contact-grid{grid-template-columns:1fr;gap:var(--space-8);}}
+.contact-info-title{font-family:var(--font-display);font-size:var(--text-xl);font-weight:900;text-transform:uppercase;letter-spacing:.02em;line-height:1.1;margin-bottom:var(--space-4);}
+.contact-info-title span{color:var(--color-gold);}
+.contact-info-text{font-size:var(--text-sm);color:var(--color-text-muted);line-height:1.7;margin-bottom:var(--space-6);}
+.contact-detail{display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-sm);color:var(--color-text-muted);margin-bottom:var(--space-3);}
+.contact-detail-icon{width:36px;height:36px;background:var(--color-gold-subtle);border:1px solid rgba(200,212,0,.2);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
+.contact-form-card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:var(--space-8);box-shadow:var(--shadow-card);}
+.contact-form-title{font-family:var(--font-display);font-size:var(--text-lg);font-weight:800;text-transform:uppercase;letter-spacing:.04em;margin-bottom:var(--space-6);}
+.contact-form-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-4);}
+@media(max-width:520px){.contact-form-row{grid-template-columns:1fr;}}
+.contact-form-group{margin-bottom:var(--space-4);}
+.contact-form-group label{display:block;font-size:var(--text-sm);font-weight:600;color:var(--color-text-muted);margin-bottom:var(--space-2);letter-spacing:.04em;}
+.contact-form-group input,.contact-form-group textarea,.contact-form-group select{width:100%;padding:var(--space-3) var(--space-4);background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-md);color:var(--color-text);font-size:var(--text-base);transition:border-color var(--transition),box-shadow var(--transition);}
+.contact-form-group input:focus,.contact-form-group textarea:focus,.contact-form-group select:focus{outline:none;border-color:var(--color-gold);box-shadow:0 0 0 3px var(--color-gold-subtle);}
+.contact-form-group input::placeholder,.contact-form-group textarea::placeholder{color:var(--color-text-faint);}
+.contact-form-group textarea{resize:vertical;min-height:110px;}
+.contact-submit-btn{width:100%;padding:var(--space-4);background:var(--color-gold);color:#0e0d0b;border-radius:var(--radius-md);font-family:var(--font-display);font-size:var(--text-base);font-weight:800;letter-spacing:.06em;text-transform:uppercase;transition:background var(--transition),transform var(--transition);cursor:pointer;}
+.contact-submit-btn:hover{background:var(--color-gold-dim);transform:translateY(-1px);}
+.contact-submit-btn:active{transform:scale(.98);}
+.contact-submit-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.contact-success{display:none;text-align:center;padding:var(--space-8) 0;}
+.contact-success-icon{font-size:48px;margin-bottom:var(--space-3);}
+.contact-success-msg{font-size:var(--text-sm);color:var(--color-text-muted);line-height:1.7;}
+
 </style>
 <!-- EmailJS SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-  // ── EmailJS init ──────────────────────────────────────────
-  // CONFIGURATION EMAILJS — à compléter après création du compte
-  // 1. Créer compte sur https://www.emailjs.com (gratuit, 200 emails/mois)
-  // 2. Ajouter service Gmail : cnalbatrosaulnoyeaymeries@gmail.com
-  // 3. Créer 2 templates (club + client) et noter les IDs
-  // 4. Remplacer les valeurs ci-dessous
-  const EMAILJS_PUBLIC_KEY  = 'VOTRE_PUBLIC_KEY';   // Account → API Keys
-  const EMAILJS_SERVICE_ID  = 'VOTRE_SERVICE_ID';   // Email Services → Service ID
-  const EMAILJS_TEMPLATE_CLUB   = 'template_club';  // ID template notif club
-  const EMAILJS_TEMPLATE_CLIENT = 'template_client'; // ID template confirm client
+  /* ════════════════════════════════════════════════════════
+     CONFIGURATION EMAILJS — À COMPLÉTER UNE SEULE FOIS
+     ════════════════════════════════════════════════════════
+     1. Créer un compte gratuit sur https://www.emailjs.com
+        (200 emails/mois gratuits)
+     2. Email Services → Add New Service → Gmail
+        → Connecter cnalbatrosaulnoyeaymeries@gmail.com
+        → Copier le Service ID
+     3. Email Templates → Create New Template × 2
+        - template_club   : notif interne au club
+        - template_client : confirmation envoyée au client
+        - template_contact : message formulaire de contact
+        Variables disponibles dans les templates :
+          {{client_name}}, {{client_email}}, {{client_phone}},
+          {{client_member}}, {{client_notes}},
+          {{order_id}}, {{order_date}},
+          {{order_articles}}, {{order_total}},
+          {{pay_method}}, {{pay_icon}}
+        Pour template_contact :
+          {{contact_name}}, {{contact_email}},
+          {{contact_subject}}, {{contact_message}}
+     4. Account → API Keys → copier la Public Key
+     ════════════════════════════════════════════════════════ */
+  const EMAILJS_PUBLIC_KEY      = 'VOTRE_PUBLIC_KEY';    // ← remplacer
+  const EMAILJS_SERVICE_ID      = 'VOTRE_SERVICE_ID';    // ← remplacer
+  const EMAILJS_TEMPLATE_CLUB   = 'template_club';       // ← remplacer si besoin
+  const EMAILJS_TEMPLATE_CLIENT = 'template_client';     // ← remplacer si besoin
   const CLUB_EMAIL = 'cnalbatrosaulnoyeaymeries@gmail.com';
   emailjs.init(EMAILJS_PUBLIC_KEY);
 </script>
@@ -323,6 +362,7 @@ input.invalid,select.invalid{border-color:var(--color-error);}
       <nav aria-label="Navigation principale">
         <ul class="header-nav">
           <li><a href="#boutique" class="active">Boutique</a></li>
+          <li><a href="#contact">Contact</a></li>
           <li><a href="https://www.cn-albatros.fr" target="_blank" rel="noopener noreferrer">Site du Club</a></li>
         </ul>
       </nav>
@@ -464,12 +504,75 @@ input.invalid,select.invalid{border-color:var(--color-error);}
 
     </div>
 
-    <div class="info-banner reveal">
-      <div style="font-size:24px;flex-shrink:0;margin-top:2px">🔒</div>
+    <!-- ═══ CONTACT ══════════════════════════════════════════ -->
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="contact-grid">
+
+      <!-- Infos gauche -->
       <div>
-        <div class="info-title">Commande avec règlement à la remise</div>
-        <p class="info-text">Réglez votre commande en toute sécurité avec votre compte règlement sur place ou directement par carte bancaire via règlement sur place. Vos coordonnées ne sont jamais partagées avec le club. Pour toute question : page Facebook <strong>CN Albatros Aulnoye-Aymeries</strong>.</p>
+        <p class="section-eyebrow">Nous contacter</p>
+        <h2 class="contact-info-title">Une <span>question</span> ?<br>Écrivez-nous.</h2>
+        <p class="contact-info-text">Pour toute question sur les articles, les tailles disponibles ou la commande, notre équipe répond rapidement. Vous pouvez aussi nous retrouver sur nos réseaux.</p>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">📧</div>
+          <div>cnalbatrosaulnoyeaymeries@gmail.com</div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">🌐</div>
+          <div><a href="https://www.cn-albatros.fr" target="_blank" rel="noopener noreferrer" class="footer-link">www.cn-albatros.fr</a></div>
+        </div>
+        <div class="contact-detail">
+          <div class="contact-detail-icon">📘</div>
+          <div>Page Facebook : <strong>CN Albatros Aulnoye-Aymeries</strong></div>
+        </div>
       </div>
+
+      <!-- Formulaire droite -->
+      <div class="contact-form-card">
+        <div id="contactFormWrap">
+          <div class="contact-form-title">Envoyer un message</div>
+          <div class="contact-form-row">
+            <div class="contact-form-group">
+              <label for="contactFirstName">Prénom <span style="color:var(--color-gold)">*</span></label>
+              <input type="text" id="contactFirstName" placeholder="Marie" autocomplete="given-name">
+            </div>
+            <div class="contact-form-group">
+              <label for="contactLastName">Nom <span style="color:var(--color-gold)">*</span></label>
+              <input type="text" id="contactLastName" placeholder="Dupont" autocomplete="family-name">
+            </div>
+          </div>
+          <div class="contact-form-group">
+            <label for="contactEmail">Email <span style="color:var(--color-gold)">*</span></label>
+            <input type="email" id="contactEmail" placeholder="votre@email.fr" autocomplete="email">
+          </div>
+          <div class="contact-form-group">
+            <label for="contactSubject">Sujet</label>
+            <select id="contactSubject">
+              <option value="">— Choisir un sujet —</option>
+              <option value="Commande">Question sur une commande</option>
+              <option value="Taille">Question sur les tailles</option>
+              <option value="Article">Renseignement sur un article</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+          <div class="contact-form-group">
+            <label for="contactMessage">Message <span style="color:var(--color-gold)">*</span></label>
+            <textarea id="contactMessage" placeholder="Votre message..."></textarea>
+          </div>
+          <button class="contact-submit-btn" id="contactSubmitBtn" onclick="submitContact()">
+            Envoyer le message ✉️
+          </button>
+        </div>
+        <!-- Message succès -->
+        <div class="contact-success" id="contactSuccess">
+          <div class="contact-success-icon">✅</div>
+          <div class="contact-form-title" style="color:var(--color-success)">Message envoyé !</div>
+          <p class="contact-success-msg">Merci pour votre message. Le club vous répondra dans les meilleurs délais à l'adresse <strong id="contactSuccessEmail"></strong>.</p>
+          <button class="contact-submit-btn" style="margin-top:var(--space-6);max-width:240px;margin-inline:auto" onclick="resetContactForm()">Nouveau message</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
@@ -831,7 +934,6 @@ function goToStep2() {
   goToStep(2);
 }
 
-
 let selectedPayMethod = null;
 let currentOrderId = '';
 let currentPayMethod = '';
@@ -959,6 +1061,71 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     document.getElementById('visibleCount').textContent = n + ' article' + (n>1?'s':'');
   });
 });
+
+
+// ── Formulaire de contact ─────────────────────────────────
+function submitContact() {
+  var firstName = document.getElementById('contactFirstName').value.trim();
+  var lastName  = document.getElementById('contactLastName').value.trim();
+  var email     = document.getElementById('contactEmail').value.trim();
+  var subject   = document.getElementById('contactSubject').value;
+  var message   = document.getElementById('contactMessage').value.trim();
+
+  if (!firstName || !lastName || !email || !message) {
+    showToast('⚠️ Veuillez remplir tous les champs obligatoires.');
+    return;
+  }
+  var emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRe.test(email)) {
+    showToast('⚠️ Adresse email invalide.');
+    return;
+  }
+
+  if (!EMAILJS_PUBLIC_KEY || EMAILJS_PUBLIC_KEY === 'VOTRE_PUBLIC_KEY') {
+    showToast('⚠️ EmailJS non configuré — message non envoyé.');
+    return;
+  }
+
+  var btn = document.getElementById('contactSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Envoi en cours…';
+
+  var params = {
+    contact_name:    firstName + ' ' + lastName,
+    contact_email:   email,
+    contact_subject: subject || 'Non précisé',
+    contact_message: message,
+    club_email:      CLUB_EMAIL,
+    to_email:        CLUB_EMAIL
+  };
+
+  emailjs.send(EMAILJS_SERVICE_ID, 'template_contact', params)
+    .then(function() {
+      document.getElementById('contactSuccessEmail').textContent = email;
+      document.getElementById('contactFormWrap').style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+      showToast('📧 Message envoyé avec succès !');
+    })
+    .catch(function(err) {
+      console.error('Erreur contact:', err);
+      btn.disabled = false;
+      btn.textContent = 'Envoyer le message ✉️';
+      showToast('❌ Erreur lors de l\'envoi. Réessayez ou contactez-nous directement.');
+    });
+}
+
+function resetContactForm() {
+  document.getElementById('contactFirstName').value = '';
+  document.getElementById('contactLastName').value  = '';
+  document.getElementById('contactEmail').value     = '';
+  document.getElementById('contactSubject').value   = '';
+  document.getElementById('contactMessage').value   = '';
+  var btn = document.getElementById('contactSubmitBtn');
+  btn.disabled = false;
+  btn.textContent = 'Envoyer le message ✉️';
+  document.getElementById('contactFormWrap').style.display = 'block';
+  document.getElementById('contactSuccess').style.display  = 'none';
+}
 
 // ── Toast ─────────────────────────────────────────────────
 function showToast(msg) {
