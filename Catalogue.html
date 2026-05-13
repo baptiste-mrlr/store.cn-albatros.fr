@@ -315,38 +315,42 @@ input.invalid,select.invalid{border-color:var(--color-error);}
 .contact-success-msg{font-size:var(--text-sm);color:var(--color-text-muted);line-height:1.7;}
 
 </style>
-<!-- EmailJS SDK -->
+<!-- EmailJS SDK (chargement synchrone requis) -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
   /* ════════════════════════════════════════════════════════
-     CONFIGURATION EMAILJS — À COMPLÉTER UNE SEULE FOIS
-     ════════════════════════════════════════════════════════
-     1. Créer un compte gratuit sur https://www.emailjs.com
-        (200 emails/mois gratuits)
-     2. Email Services → Add New Service → Gmail
-        → Connecter cnalbatrosaulnoyeaymeries@gmail.com
-        → Copier le Service ID
-     3. Email Templates → Create New Template × 2
-        - template_club   : notif interne au club
-        - template_client : confirmation envoyée au client
-        - template_contact : message formulaire de contact
-        Variables disponibles dans les templates :
-          {{client_name}}, {{client_email}}, {{client_phone}},
-          {{client_member}}, {{client_notes}},
-          {{order_id}}, {{order_date}},
-          {{order_articles}}, {{order_total}},
-          {{pay_method}}, {{pay_icon}}
-        Pour template_contact :
-          {{contact_name}}, {{contact_email}},
-          {{contact_subject}}, {{contact_message}}
-     4. Account → API Keys → copier la Public Key
+     COMPTE 1 — Commandes (club + confirmation client)
+     Variables templates : {{client_name}}, {{client_email}},
+       {{client_phone}}, {{client_member}}, {{client_notes}},
+       {{order_id}}, {{order_date}}, {{order_articles}},
+       {{order_total}}, {{pay_method}}, {{pay_icon}}, {{to_email}}
      ════════════════════════════════════════════════════════ */
-  const EMAILJS_PUBLIC_KEY      = "2N6pim-Fpt6L8KltI";    // ← remplacer
-  const EMAILJS_SERVICE_ID      = "service_5jcobxi";    // ← remplacer
-  const EMAILJS_TEMPLATE_CLUB   = "template_pllk0pb";       // ← remplacer si besoin
-  const EMAILJS_TEMPLATE_CLIENT = "template_4nt43xn";     // ← remplacer si besoin
+  const ORDERS_PUBLIC_KEY      = "2N6pim-Fpt6L8KltI";
+  const ORDERS_SERVICE_ID      = "service_5jcobxi";
+  const ORDERS_TEMPLATE_CLUB   = "template_xyolkdl";
+  const ORDERS_TEMPLATE_CLIENT = "template_4nt43xn";
+
+  /* ════════════════════════════════════════════════════════
+     COMPTE 2 — Formulaire de contact  ← À COMPLÉTER
+     Variables templates :
+       Pour template_contact_club (notif club) :
+         {{contact_name}}, {{contact_email}}, {{contact_subject}},
+         {{contact_message}}, {{to_email}} (= adresse club)
+       Pour template_contact_client (accusé réception client) :
+         {{contact_name}}, {{contact_subject}}, {{to_email}} (= adresse client)
+     ════════════════════════════════════════════════════════ */
+  const CONTACT_PUBLIC_KEY      = "Wb-mrsojCAOs1Epyc";    // ← remplacer
+  const CONTACT_SERVICE_ID      = "service_rwd8dls";    // ← remplacer
+  const CONTACT_TEMPLATE_CLUB   = "template_lqvkfpa";        // ← remplacer (notif club)
+  const CONTACT_TEMPLATE_CLIENT = "template_75n7rio";      // ← remplacer (accusé réception client)
+
   const CLUB_EMAIL = 'cnalbatrosaulnoyeaymeries@gmail.com';
-  emailjs.init(EMAILJS_PUBLIC_KEY);
+
+  // Init compte 1 (commandes)
+  if (typeof emailjs !== 'undefined') {
+    emailjs.init(ORDERS_PUBLIC_KEY);
+    console.log('✅ EmailJS compte commandes initialisé');
+  }
 </script>
 </head>
 <body>
@@ -995,11 +999,8 @@ function sendOrderEmails(items, payMethod, orderId) {
     console.log('Aucun article à envoyer par email.');
     return;
   }
-  if (!EMAILJS_PUBLIC_KEY || EMAILJS_PUBLIC_KEY === 'VOTRE_PUBLIC_KEY') {
-    showToast('⚠️ EmailJS n\'est pas encore configuré.');
-    console.log('EmailJS non configuré — emails ignorés.');
-    return;
-  }
+  // Re-init compte commandes
+  try { emailjs.init(ORDERS_PUBLIC_KEY); } catch(e) {}
 
   var name    = (document.getElementById('firstName').value + ' ' + document.getElementById('lastName').value).trim();
   var email   = document.getElementById('email').value;
@@ -1015,34 +1016,40 @@ function sendOrderEmails(items, payMethod, orderId) {
 
   var payLabel = payMethod === 'cash' ? 'Règlement en espèces à la remise' : 'Règlement par carte bancaire en physique à la remise';
 
-  var templateParams = {
-    to_email: email,
-    club_email: CLUB_EMAIL,
-    client_name: name,
-    client_email: email,
-    client_phone: phone,
+  // Params pour le club (to_email = adresse du club)
+  var paramsClub = {
+    to_email:      CLUB_EMAIL,
+    club_email:    CLUB_EMAIL,
+    client_name:   name,
+    client_email:  email,
+    client_phone:  phone,
     client_member: member || 'Non renseigné',
-    client_notes: notes || 'Aucune',
-    order_id: orderId,
-    order_date: dateStr,
+    client_notes:  notes  || 'Aucune',
+    order_id:      orderId,
+    order_date:    dateStr,
     order_articles: articlesText,
-    order_total: fmt(total),
-    pay_method: payLabel,
-    pay_icon: payMethod === 'cash' ? '💵' : '💳'
+    order_total:   fmt(total),
+    pay_method:    payLabel,
+    pay_icon:      payMethod === 'cash' ? '💵' : '💳'
   };
 
-  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_CLUB, templateParams)
-    .then(function(){ console.log('Email club envoyé'); })
-    .catch(function(err){ console.error('Erreur email club:', err); });
+  // Params pour le client (to_email = adresse du client)
+  var paramsClient = Object.assign({}, paramsClub, { to_email: email });
 
-  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_CLIENT, templateParams)
+  // Envoi au club (compte 1)
+  emailjs.send(ORDERS_SERVICE_ID, ORDERS_TEMPLATE_CLUB, paramsClub)
+    .then(function(){ console.log('✅ Email club envoyé'); })
+    .catch(function(err){ console.error('❌ Erreur email club:', err); });
+
+  // Envoi de confirmation au client (compte 1)
+  emailjs.send(ORDERS_SERVICE_ID, ORDERS_TEMPLATE_CLIENT, paramsClient)
     .then(function(){
-      console.log('Email client envoyé');
+      console.log('✅ Email client envoyé');
       showToast('📧 Email de confirmation envoyé à ' + email);
     })
     .catch(function(err){
-      console.error('Erreur email client:', err);
-      showToast('⚠️ La commande est enregistrée, mais l\'email a échoué.');
+      console.error('❌ Erreur email client:', err);
+      showToast('⚠️ Commande enregistrée, mais l\'envoi de l\'email a échoué.');
     });
 }
 
@@ -1081,16 +1088,20 @@ function submitContact() {
     return;
   }
 
-  if (!EMAILJS_PUBLIC_KEY || EMAILJS_PUBLIC_KEY === 'VOTRE_PUBLIC_KEY') {
-    showToast('⚠️ EmailJS non configuré — message non envoyé.');
+  if (!CONTACT_PUBLIC_KEY || CONTACT_PUBLIC_KEY === 'VOTRE_PUBLIC_KEY_CONTACT') {
+    showToast('⚠️ Compte EmailJS contact non configuré. Renseignez CONTACT_PUBLIC_KEY dans le fichier HTML.');
     return;
   }
+
+  // Init compte 2 (contact)
+  try { emailjs.init(CONTACT_PUBLIC_KEY); } catch(e) {}
 
   var btn = document.getElementById('contactSubmitBtn');
   btn.disabled = true;
   btn.textContent = 'Envoi en cours…';
 
-  var params = {
+  // Params pour le club (reçoit le message)
+  var paramsClub = {
     contact_name:    firstName + ' ' + lastName,
     contact_email:   email,
     contact_subject: subject || 'Non précisé',
@@ -1099,15 +1110,25 @@ function submitContact() {
     to_email:        CLUB_EMAIL
   };
 
-  emailjs.send(EMAILJS_SERVICE_ID, 'template_contact', params)
+  // Params pour le client (accusé de réception)
+  var paramsClient = Object.assign({}, paramsClub, { to_email: email });
+
+  // Envoi au club via compte 2
+  emailjs.send(CONTACT_SERVICE_ID, CONTACT_TEMPLATE_CLUB, paramsClub)
+    .then(function(){ console.log('✅ Email contact → club envoyé'); })
+    .catch(function(err){ console.error('❌ Erreur email contact club:', err); });
+
+  // Accusé de réception au client via compte 2
+  emailjs.send(CONTACT_SERVICE_ID, CONTACT_TEMPLATE_CLIENT, paramsClient)
     .then(function() {
+      console.log('✅ Email contact → client envoyé');
       document.getElementById('contactSuccessEmail').textContent = email;
       document.getElementById('contactFormWrap').style.display = 'none';
       document.getElementById('contactSuccess').style.display = 'block';
-      showToast('📧 Message envoyé avec succès !');
+      showToast('📧 Message envoyé ! Un accusé de réception vous a été envoyé.');
     })
     .catch(function(err) {
-      console.error('Erreur contact:', err);
+      console.error('❌ Erreur email contact client:', err);
       btn.disabled = false;
       btn.textContent = 'Envoyer le message ✉️';
       showToast('❌ Erreur lors de l\'envoi. Réessayez ou contactez-nous directement.');
